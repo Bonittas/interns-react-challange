@@ -1,23 +1,30 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import ActorList from './components/actor/ActorList';
+import ActorDetail from './components/actor/ActorDetail';
+import useFetch from './hooks/useFetch';
+import Home from './pages/Home';
 
 function App() {
+  const [selectedActor, setSelectedActor] = useState(null);
+  const { data: actors, loading, error } = useFetch('people');
+
+  const handleDetailClick = (actor) => {
+    setSelectedActor(actor);
+  };
+
   return (
+
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+          <Home/>
+
+      <h1>Star Wars Actors</h1>
+      {/* Display loading spinner */}
+      {loading && <div className="loading-spinner"></div>}
+      {/* Display user-friendly error message */}
+      {error && <p className="error-message">Oops! Something went wrong. Please try again later.</p>}
+      <ActorList actors={actors} onDetailClick={handleDetailClick} />
+      {selectedActor && <ActorDetail actor={selectedActor} />}
     </div>
   );
 }
